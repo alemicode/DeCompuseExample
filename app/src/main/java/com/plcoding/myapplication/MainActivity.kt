@@ -54,12 +54,24 @@ class MainActivity : ComponentActivity() {
                         mainViewModel.state
                     }.collectAsState()
 
+
+
                     when (state) {
                         is MainState.Init -> {
                             with(state as MainState.Init) {
+                                val d by remember {
+                                    mutableStateOf(data)
+                                }
+
+                                val name by remember {
+                                    mutableStateOf(name)
+                                }
+
+
+
                                 MainScreen(
                                     action,
-                                    data = data,
+                                    data = d,
                                     name = name
                                 )
                             }
@@ -74,10 +86,25 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun mnageLazyColumn(data: State<List<MainModel>>, action: MainAction) {
+private fun mnageLazyColumn(data: List<MainModel>, action: MainAction) {
     Log.d("TAG", "BottumClickable: lazyyyyyyyy")
 
     LazyColumn(
+        modifier = Modifier.fillMaxWidth(0.5f)
+    ) {
+        itemsIndexed(data) { index, item ->
+            ItemInEachRow(model = item)
+            action.plus()
+        }
+    }
+}
+
+@Composable
+private fun mnageLazyColumn2(data: State<List<MainModel>>, action: MainAction) {
+    Log.d("TAG", "BottumClickable: lazyyyyyyyy2")
+
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth(0.5f)
     ) {
         itemsIndexed(data.value) { index, item ->
             ItemInEachRow(model = item)
@@ -101,12 +128,16 @@ private fun BottumClickable(changeName: (name: String) -> Unit, name: String) {
 }
 
 @Composable
-private fun MainScreen(action: MainAction, data: State<List<MainModel>>, name: String) {
+private fun MainScreen(action: MainAction, data: List<MainModel>, name: String) {
 
-    Column() {
+
+    Column {
         BottumClickable(action.changeName, name)
 
-        mnageLazyColumn(data, action)
+        Row(modifier = Modifier.fillMaxWidth()) {
+            mnageLazyColumn(data, action)
+
+        }
     }
 }
 
@@ -114,6 +145,7 @@ private fun MainScreen(action: MainAction, data: State<List<MainModel>>, name: S
 fun ItemInEachRow(
     model: MainModel
 ) {
+
     Row(
         modifier = Modifier
             .fillMaxWidth()

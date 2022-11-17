@@ -23,7 +23,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
     fun getData() {
         val data = generateFakeData()
-        _state.value = MainState.Init(data = mutableStateOf(data), "mohamad")
+        _state.value = MainState.Init(data = data, "mohamad")
     }
 
 
@@ -44,7 +44,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
 sealed class MainState() {
     data class Init(
-        val data: State<List<MainModel>> = mutableStateOf(listOf()),
+        val data: List<MainModel> = listOf(),
         val name: String = "",
         val loading: State<Boolean> = mutableStateOf(true)
     ) : MainState()
